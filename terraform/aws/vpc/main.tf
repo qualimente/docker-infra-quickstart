@@ -25,12 +25,41 @@ resource "aws_vpc" "main" {
   }
 }
 
-resource "aws_subnet" "main" {
+resource "aws_subnet" "dmz" {
   vpc_id = "${aws_vpc.main.id}"
   count = "${length(split(",", var.availability_zones))}"
-  cidr_block = "${lookup(var.cidr_blocks, concat("az", count.index))}"
+  cidr_block = "${cidrsubnet(lookup(var.cidr_blocks, concat("az", count.index)), 6, 0)}"
   availability_zone = "${var.region}${element(split(",", var.availability_zones), count.index)}"
   tags {
-    Name = "${concat("az", count.index)}"
+    Name = "${concat("az", count.index)}-dmz"
   }
 }
+
+resource "aws_subnet" "app" {
+  vpc_id = "${aws_vpc.main.id}"
+  count = "${length(split(",", var.availability_zones))}"
+  cidr_block = "${cidrsubnet(lookup(var.cidr_blocks, concat("az", count.index)), 6, 1)}"
+  availability_zone = "${var.region}${element(split(",", var.availability_zones), count.index)}"
+  tags {
+    Name = "${concat("az", count.index)}-app"
+  }
+}
+
+resource "aws_subnet" "mgmt" {
+  vpc_id = "${aws_vpc.main.id}"
+  count = "${length(split(",", var.availability_zones))}"
+  cidr_block = "${cidrsubnet(lookup(var.cidr_blocks, concat("az", count.index)), 6, 2)}"
+  availability_zone = "${var.region}${element(split(",", var.availability_zones), count.index)}"
+  tags {
+    Name = "${concat("az", count.index)}-mgmt"
+  }
+}
+
+output "vpc_id" {
+  value = "${aws_vpc.main.id}"
+}
+
+output "availability_zones" {
+  value = "${join(",",aws_subnet.dmz.*.availability_zone)}"
+}
+
