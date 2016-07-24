@@ -25,41 +25,29 @@ resource "aws_vpc" "main" {
   }
 }
 
-resource "aws_subnet" "dmz" {
+# Define 3 availability zones
+module "az0" {
+  source ="../az"
   vpc_id = "${aws_vpc.main.id}"
-  count = "${length(split(",", var.availability_zones))}"
-  cidr_block = "${cidrsubnet(lookup(var.cidr_blocks, concat("az", count.index)), 6, 0)}"
-  availability_zone = "${var.region}${element(split(",", var.availability_zones), count.index)}"
-  tags {
-    Name = "${concat("az", count.index)}-dmz"
-  }
+  az_id = "${var.region}a"
+  az_cidr = "10.42.0.0/18"
 }
 
-resource "aws_subnet" "app" {
+module "az1" {
+  source ="../az"
   vpc_id = "${aws_vpc.main.id}"
-  count = "${length(split(",", var.availability_zones))}"
-  cidr_block = "${cidrsubnet(lookup(var.cidr_blocks, concat("az", count.index)), 6, 1)}"
-  availability_zone = "${var.region}${element(split(",", var.availability_zones), count.index)}"
-  tags {
-    Name = "${concat("az", count.index)}-app"
-  }
+  az_id = "${var.region}b"
+  az_cidr = "10.42.64.0/18"
 }
 
-resource "aws_subnet" "mgmt" {
+module "az2" {
+  source ="../az"
   vpc_id = "${aws_vpc.main.id}"
-  count = "${length(split(",", var.availability_zones))}"
-  cidr_block = "${cidrsubnet(lookup(var.cidr_blocks, concat("az", count.index)), 6, 2)}"
-  availability_zone = "${var.region}${element(split(",", var.availability_zones), count.index)}"
-  tags {
-    Name = "${concat("az", count.index)}-mgmt"
-  }
+  az_id = "${var.region}c"
+  az_cidr = "10.42.128.0/18"
 }
 
 output "vpc_id" {
   value = "${aws_vpc.main.id}"
-}
-
-output "availability_zones" {
-  value = "${join(",",aws_subnet.dmz.*.availability_zone)}"
 }
 
