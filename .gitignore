@@ -47,6 +47,7 @@ fabric.properties
 # Compiled files
 *.tfstate
 *.tfstate.backup
+.terraform
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Packer template
