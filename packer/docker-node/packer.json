@@ -2,8 +2,8 @@
   "variables": {
     "ami_name": "DockerInfraBase-CentOS-7-hvm",
     "description": "Docker on CentOS 7 accessible via /var/run/docker.sock.",
-    "aws_access_key": "",
-    "aws_secret_key": ""
+    "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}"
   },
   "builders": [
     {

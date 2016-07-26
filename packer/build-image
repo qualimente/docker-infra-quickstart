@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -e
+#set -x
+
+function usage(){
+  echo "Usage ${0} --image <name of packer image directory>"
+}
+
+while [[ $# -gt 1 ]]
+do
+key="$1"
+
+case $key in
+    -i|--image)
+    image_name="$2"
+    shift # past argument
+    ;;
+    *)
+    # unknown option
+    usage
+    exit 1
+    ;;
+esac
+shift # past argument or value
+done
+
+function echo-err(){
+  >&2 echo $1
+}
+
+if [ -z "${image_name}" ]
+then
+  echo-err "Please specify the name of an image to build, e.g. docker-node"
+  usage
+  exit 1
+else
+  echo image name = "${image_name}"
+fi
+
+docker run --rm -it \
+  -e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} -e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+  -v $(pwd)/${image_name}:/src \
+  hashicorp/packer:light \
+  build /src/packer.json
