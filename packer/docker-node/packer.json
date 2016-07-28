@@ -9,10 +9,10 @@
     {
       "access_key": "{{user `aws_access_key`}}",
       "secret_key": "{{user `aws_secret_key`}}",
-      "name": "ec2-us-east-1",
+      "name": "ec2-us-west-2",
       "type": "amazon-ebs",
-      "region": "us-east-1",
-      "source_ami": "ami-6d1c2007",
+      "region": "us-west-2",
+      "source_ami": "ami-d2c924b2",
       "instance_type": "m3.medium",
       "communicator": "ssh",
       "ssh_pty": true,
