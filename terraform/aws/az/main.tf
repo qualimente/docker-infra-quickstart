@@ -9,11 +9,11 @@ variable "mgmt-key_name" { default = "key-infra-mgmt" }
 variable "instance_type-bastion" { default = "t2.small" }
 
 variable "amis" {
-  #CentOS 7 HVM w/ Updates
+  # DockerInfraBase-CentOS-7-hvm: CentOS 7 HVM w/ Updates & Docker 1.11
   default = {
-    us-east-1 = "ami-6d1c2007"
-    us-west-1 = "ami-af4333cf"
-    us-west-2 = "ami-d2c924b2"
+    us-east-1 = "ami-53089c44"
+    us-west-1 = "ami-973373f7"
+    us-west-2 = "ami-b18846d1"
   }
 }
 
