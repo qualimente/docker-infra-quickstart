@@ -1,0 +1,7 @@
+{
+    "log-level": "info",
+    "disable-legacy-registry":true,
+    "iptables": true,
+    "icc": false
+}
+
