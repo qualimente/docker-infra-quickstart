@@ -42,6 +42,7 @@
         "sudo yum update -y",
         "sudo rpm --import 'https://pgp.mit.edu/pks/lookup?op=get&search=0xee6d536cf7dc86e2d7d56f59a178ac6c6238f52e'",
         "sudo yum install -y yum-utils",
+        "sudo sed -i 's/^Defaults.*requiretty$/Defaults    !requiretty/' /etc/sudoers",
         "sudo mkdir -p /etc/docker",
         "sudo ls -ltR /tmp",
         "sudo mv /tmp/resources/daemon.json /etc/docker/daemon.json",
