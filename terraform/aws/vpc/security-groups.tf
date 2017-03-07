@@ -1,5 +1,3 @@
-variable "name" {}
-
 resource "aws_security_group" "bastion" {
   name = "${var.name}-bastion"
   description = "Inbound traffic for ${var.name} bastion nodes"

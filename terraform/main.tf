@@ -11,6 +11,7 @@ variable "name" {default = "docker-infra-quickstart"}
 # Providing a /18 network to the AZ enables further division of up to 64 c-block-sized subnets
 variable "vpc_cidr" {default = "10.42.0.0/16"}
 variable "cidr_blocks" {
+  type = "map"
   default = {
     az0 = "10.42.0.0/18"
     az1 = "10.42.64.0/18"
@@ -20,7 +21,7 @@ variable "cidr_blocks" {
 }
 
 module "vpc" {
-  source ="./aws/vpc"
+  source = "./aws/vpc"
   name = "${var.name}"
   region = "${var.region}"
   cidr = "10.42.0.0/16"

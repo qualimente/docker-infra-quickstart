@@ -10,10 +10,11 @@ variable "instance_type-bastion" { default = "t2.small" }
 
 variable "amis" {
   # DockerInfraBase-CentOS-7-hvm: CentOS 7 HVM w/ Updates & Docker 1.11
+  type = "map"
   default = {
     us-east-1 = "ami-53089c44"
     us-west-1 = "ami-af4333cf"
-    us-west-2 = "ami-b18846d1"
+    us-west-2 = "ami-2615a646"
   }
 }
 
