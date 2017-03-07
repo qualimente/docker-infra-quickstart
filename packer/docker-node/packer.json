@@ -50,7 +50,7 @@
         "sudo mv /tmp/resources/docker.audit.rules /etc/audit/rules.d/docker.rules",
         "sudo chmod 600 /etc/audit/rules.d/docker.rules",
         "sudo systemctl start auditd.service",
-        "sudo yum-config-manager --add-repo https://packages.docker.com/1.11/yum/repo/main/centos/7",
+        "sudo yum-config-manager --add-repo https://packages.docker.com/1.13/yum/repo/main/centos/7",
         "sudo yum install -y docker-engine",
         "sudo systemctl daemon-reload",
         "sudo systemctl enable docker",
