@@ -2,17 +2,18 @@
   "variables": {
     "ami_name": "DockerInfraBase-CentOS-7-hvm",
     "description": "Docker on CentOS 7 accessible via /var/run/docker.sock.",
-    "aws_access_key": "",
-    "aws_secret_key": ""
+    "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}"
   },
   "builders": [
     {
       "access_key": "{{user `aws_access_key`}}",
       "secret_key": "{{user `aws_secret_key`}}",
-      "name": "ec2-us-east-1",
+      "name": "ec2-us-west-2",
       "type": "amazon-ebs",
-      "region": "us-east-1",
-      "source_ami": "ami-6d1c2007",
+      "region": "us-west-2",
+      "source_ami": "ami-d2c924b2",
+      "ami_regions": ["us-west-1", "us-east-1"],
       "instance_type": "m3.medium",
       "communicator": "ssh",
       "ssh_pty": true,
@@ -29,6 +30,11 @@
   ],
   "provisioners": [
     {
+      "type": "file",
+      "source": "resources",
+      "destination": "/tmp"
+    },
+    {
       "type": "shell",
       "start_retry_timeout": "10m",
       "inline": [
@@ -36,14 +42,24 @@
         "sudo yum update -y",
         "sudo rpm --import 'https://pgp.mit.edu/pks/lookup?op=get&search=0xee6d536cf7dc86e2d7d56f59a178ac6c6238f52e'",
         "sudo yum install -y yum-utils",
-        "sudo yum-config-manager --add-repo https://packages.docker.com/1.11/yum/repo/main/centos/7",
+        "sudo sed -i 's/^Defaults.*requiretty$/Defaults    !requiretty/' /etc/sudoers",
+        "sudo mkdir -p /etc/docker",
+        "sudo ls -ltR /tmp",
+        "sudo mv /tmp/resources/daemon.json /etc/docker/daemon.json",
+        "sudo chmod 600 /etc/docker/daemon.json",
+        "sudo mv /tmp/resources/docker.audit.rules /etc/audit/rules.d/docker.rules",
+        "sudo chmod 600 /etc/audit/rules.d/docker.rules",
+        "sudo systemctl start auditd.service",
+        "sudo yum-config-manager --add-repo https://packages.docker.com/1.13/yum/repo/main/centos/7",
         "sudo yum install -y docker-engine",
         "sudo systemctl daemon-reload",
         "sudo systemctl enable docker",
         "sudo systemctl restart docker",
         "sudo docker -H unix:///var/run/docker.sock pull alpine",
         "sudo systemctl stop docker",
-        "sudo rm -f /etc/docker/key.*"
+        "sudo rm -f /etc/docker/key.*",
+        "sudo grep '\"icc\": false' /etc/docker/daemon.json",
+        "sudo rm -rf /tmp/resources"
       ]
     }
   ]

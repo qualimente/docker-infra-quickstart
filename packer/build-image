@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -e
+#set -x
+
+function usage(){
+  echo "Usage ${0} --image <name of packer image directory>"
+}
+
+while [[ $# -gt 1 ]]
+do
+key="$1"
+
+case $key in
+    -i|--image)
+    image_name="$2"
+    shift # past argument
+    ;;
+    *)
+    # unknown option
+    usage
+    exit 1
+    ;;
+esac
+shift # past argument or value
+done
+
+function echo-err(){
+  >&2 echo $1
+}
+
+if [ -z "${image_name}" ]
+then
+  echo-err "Please specify the name of an image to build, e.g. docker-node"
+  usage
+  exit 1
+else
+  echo image name = "${image_name}"
+fi
+
+
+# build using a local packer installation from path because packer image does not
+# seem to be able to authenticate:
+# Build 'ec2-us-west-2' errored: Error querying AMI: AuthFailure: AWS was not able to validate the provided access credentials
+#  	status code: 401, request id:
+# possibly related to http://stackoverflow.com/questions/27433964/packer-amazon-ebs-authfailure
+# though attempts to use ~/.aws/credentials & config in-container also failed
+
+pushd ${image_name}
+packer validate packer.json
+packer build packer.json
+popd
