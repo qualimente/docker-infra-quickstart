@@ -104,6 +104,7 @@ module "data_subnet" {
 }
 
 // mgmt subnet
+// note: the mgmt subnet does *not* have access to Internet, but could be implemented by adding a route to a NAT gateway
 
 # Subnet
 resource "aws_subnet" "mgmt" {
@@ -128,24 +129,11 @@ resource "aws_route_table" "mgmt" {
   }
 }
 
-resource "aws_route_table_association" "private" {
+resource "aws_route_table_association" "mgmt" {
   subnet_id      = "${element(aws_subnet.mgmt.*.id, count.index)}"
   route_table_id = "${element(aws_route_table.mgmt.*.id, count.index)}"
   count          = "${length(keys(var.az_cidr_blocks))}"
 }
-
-/*
-resource "aws_route" "nat_gateway" {
-  route_table_id         = "${element(aws_route_table.private.*.id, count.index)}"
-  destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = "${element(aws_nat_gateway.nat.*.id, count.index)}"
-  count                  = "${length(var.cidrs)}"
-
-  depends_on             = [
-    "aws_route_table.private"
-  ]
-}
-*/
 
 output "vpc_id" {
   value = "${aws_vpc.main.id}"
