@@ -9,11 +9,6 @@ variable "environment" {
 }
 
 variable "region" {default = "us-west-2"}
-variable "availability_zones" {
-  description = "A comma-separated list of availability zones"
-  type        = "list"
-  default     = ["us-west-2a", "us-west-2b", "us-west-2c"]
-}
 
 # Define CIDR blocks for the VPC and Availability Zones within the VPC
 # https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing
