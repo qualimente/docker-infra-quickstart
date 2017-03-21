@@ -143,3 +143,20 @@ output "default_security_group_id" {
   value = "${aws_vpc.main.default_security_group_id}"
 }
 
+output "dmz_subnets" {
+  value = "${module.dmz_subnet.subnet_ids}"
+}
+
+output "app_subnets" {
+  value = "${module.dmz_subnet.subnet_ids}"
+}
+
+output "data_subnets" {
+  value = "${module.dmz_subnet.subnet_ids}"
+}
+
+output "mgmt_subnet_ids" {
+  value = [
+    "${aws_subnet.mgmt.*.id}"
+  ]
+}
