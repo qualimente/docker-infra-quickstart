@@ -103,6 +103,50 @@ module "data_subnet" {
 
 }
 
+// mgmt subnet
+
+# Subnet
+resource "aws_subnet" "mgmt" {
+  vpc_id                  = "${aws_vpc.main.id}"
+  cidr_block              = "${cidrsubnet(lookup(var.az_cidr_blocks, element(keys(var.az_cidr_blocks), count.index)), 6, 3)}"
+  availability_zone       = "${element(keys(var.az_cidr_blocks), count.index)}"
+  count                   = "${length(keys(var.az_cidr_blocks))}"
+  map_public_ip_on_launch = "false"
+
+  tags {
+    Name = "${var.environment}-mgmt.${element(keys(var.az_cidr_blocks), count.index)}"
+  }
+}
+
+# Routes
+resource "aws_route_table" "mgmt" {
+  vpc_id = "${aws_vpc.main.id}"
+  count  = "${length(keys(var.az_cidr_blocks))}"
+
+  tags {
+    Name = "${var.environment}-mgmt.${element(keys(var.az_cidr_blocks), count.index)}"
+  }
+}
+
+resource "aws_route_table_association" "private" {
+  subnet_id      = "${element(aws_subnet.mgmt.*.id, count.index)}"
+  route_table_id = "${element(aws_route_table.mgmt.*.id, count.index)}"
+  count          = "${length(keys(var.az_cidr_blocks))}"
+}
+
+/*
+resource "aws_route" "nat_gateway" {
+  route_table_id         = "${element(aws_route_table.private.*.id, count.index)}"
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = "${element(aws_nat_gateway.nat.*.id, count.index)}"
+  count                  = "${length(var.cidrs)}"
+
+  depends_on             = [
+    "aws_route_table.private"
+  ]
+}
+*/
+
 output "vpc_id" {
   value = "${aws_vpc.main.id}"
 }
