@@ -83,6 +83,26 @@ module "app_subnet" {
 
 }
 
+module "data_subnet" {
+  source = "github.com/terraform-community-modules/tf_aws_private_subnet_nat_gateway"
+
+  name   = "${var.environment}-data"
+
+  cidrs = [
+      "${cidrsubnet(lookup(var.az_cidr_blocks, element(keys(var.az_cidr_blocks), 0)), 6, 2)}"
+      , "${cidrsubnet(lookup(var.az_cidr_blocks, element(keys(var.az_cidr_blocks), 1)), 6, 2)}"
+      , "${cidrsubnet(lookup(var.az_cidr_blocks, element(keys(var.az_cidr_blocks), 2)), 6, 2)}"
+    ]
+
+  azs    = "${keys(var.az_cidr_blocks)}"
+
+  vpc_id = "${aws_vpc.main.id}"
+
+  nat_gateways_count = "1"
+  public_subnet_ids  = "${module.dmz_subnet.subnet_ids}"
+
+}
+
 output "vpc_id" {
   value = "${aws_vpc.main.id}"
 }
