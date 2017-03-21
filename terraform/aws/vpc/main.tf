@@ -69,9 +69,9 @@ module "app_subnet" {
   name   = "${var.environment}-app"
 
   cidrs = [
-      "${cidrsubnet(lookup(var.az_cidr_blocks, element(keys(var.az_cidr_blocks), 0)), 6, 1)}"
-      , "${cidrsubnet(lookup(var.az_cidr_blocks, element(keys(var.az_cidr_blocks), 1)), 6, 1)}"
-      , "${cidrsubnet(lookup(var.az_cidr_blocks, element(keys(var.az_cidr_blocks), 2)), 6, 1)}"
+      "${cidrsubnet(lookup(var.az_cidr_blocks, element(keys(var.az_cidr_blocks), 0)), 4, 1)}"
+      , "${cidrsubnet(lookup(var.az_cidr_blocks, element(keys(var.az_cidr_blocks), 1)), 4, 1)}"
+      , "${cidrsubnet(lookup(var.az_cidr_blocks, element(keys(var.az_cidr_blocks), 2)), 4, 1)}"
     ]
 
   azs    = "${keys(var.az_cidr_blocks)}"
