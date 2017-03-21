@@ -57,6 +57,15 @@ By default, the quickstart will deploy the cluster into the us-west-2 region (Or
 If you would like to change these or how many availability zones are used, please update terraform/main.tf
 
 
+# Testing #
+
+Run the tests for this quickstart by invoking:
+```
+test/execute-tests.sh
+```
+
+The `execute-tests.sh` script will run terraform get, validate, and plan using the repository's current code.
+
 # Roadmap #
 
 - [x] define VPC with production-like segmented network using terraform

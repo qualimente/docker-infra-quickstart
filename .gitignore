@@ -49,6 +49,8 @@ fabric.properties
 *.tfstate.backup
 .terraform
 
+tf-test-plan.out
+
 # Created by .ignore support plugin (hsz.mobi)
 ### Packer template
 # Cache objects
